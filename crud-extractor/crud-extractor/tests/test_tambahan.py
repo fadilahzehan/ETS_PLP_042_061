@@ -61,3 +61,26 @@ def test_regresi_left_outer_join():
     assert s.joins[0].source.name == "b"
 
 
+def test_regresi_delete_scope_tidak_bocor():
+    sql = "DELETE FROM sesi s WHERE s.id = 1;\nSELECT s.nama FROM pelanggan s;"
+    script = parse_sql(sql)
+    diags = Resolver().resolve_script(script)
+    cols = [n for n in ast.iter_nodes(script) if isinstance(n, ast.ColumnRef)]
+    select_col = [c for c in cols if c.name == "nama"][0]
+    assert select_col.resolved == "pelanggan"
+    errors = [d for d in diags if d.level == "error"]
+    assert errors == []
+
+
+def test_regresi_lookup_dari_dalam_ke_luar():
+    sql = ("SELECT x.id FROM pelanggan x "
+           "WHERE x.id IN (SELECT x.pelanggan_id FROM pesanan x)")
+    script = parse_sql(sql)
+    Resolver().resolve_script(script)
+    inner_cols = [n for n in ast.iter_nodes(script)
+                  if isinstance(n, ast.ColumnRef) and n.name == "pelanggan_id"]
+    assert len(inner_cols) == 1
+    assert inner_cols[0].resolved == "pesanan"
+
+
+

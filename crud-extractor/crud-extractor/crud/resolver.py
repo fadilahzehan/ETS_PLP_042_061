@@ -85,15 +85,15 @@ class Resolver:
             self._declare(source.alias, None, source.line)
 
     def _lookup(self, name: str) -> ScopeEntry | None:
-        """Cari nama di rantai scope."""
-        chain = []
+        """Cari nama dari scope terdalam ke luar (CI Bab 11: environment chain).
+
+        Pencarian dimulai dari scope terdalam agar inner scope bisa
+        meng-shadow nama yang sama di outer scope (§4.3)."""
         scope = self.scope
         while scope is not None:
-            chain.append(scope)
-            scope = scope.parent
-        for scope in reversed(chain):
             if name in scope.entries:
                 return scope.entries[name]
+            scope = scope.parent
         return None
 
     # ---- statement ------------------------------------------------------
@@ -139,6 +139,7 @@ class Resolver:
         self._push()
         self._declare_source(dele.table)
         self._expr(dele.where)
+        self._pop()     # Setiap _push() harus berpasangan dengan _pop() (CI Bab 11)
 
     # ---- ekspresi -------------------------------------------------------
     def _expr(self, expr) -> None:
