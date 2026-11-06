@@ -33,3 +33,16 @@ def test_regresi_keyword_case_insensitive():
         (T.KEYWORD, "UPDATE"),
         (T.KEYWORD, "DELETE"),
     ]
+
+
+def test_regresi_string_escaped_quote():
+    toks = tokenize("'O''Brien'")
+    assert toks[0].type == T.STRING
+    assert toks[0].value == "O'Brien"
+
+
+def test_regresi_operator_diamond():
+    toks = tokenize("a <> b")
+    ops = [t for t in toks if t.type == T.OP]
+    assert len(ops) == 1 and ops[0].value == "<>"
+
