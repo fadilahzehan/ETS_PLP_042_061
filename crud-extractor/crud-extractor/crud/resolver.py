@@ -182,4 +182,12 @@ class Resolver:
         #   - tepat satu tabel di scope terdalam -> isi col.resolved
         #   - lebih dari satu tabel              -> warning "ambigu tanpa skema"
         #   - tidak ada tabel                    -> warning
-        pass
+        
+        scope = self.scope
+        entries = list(scope.entries.values())
+        if len(entries) == 0:
+            self._warning(f"kolom '{col.name}' tanpa tabel di scope", col.line)
+        elif len(entries) == 1:
+            col.resolved = _target_of(entries[0])
+        else:
+            self._warning(f"kolom '{col.name}' ambigu tanpa skema", col.line)
