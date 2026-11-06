@@ -5,3 +5,11 @@ Isi dengan:
    lulus sesudahnya). Beri nama yang menjelaskan bug-nya.
 2. Lima test kasus tepi, masing-masing dengan komentar singkat mengapa kasus itu berisiko.
 """
+import pytest
+
+from crud.lexer import LexError, TokenType as T, tokenize
+from crud import ast_nodes as ast
+from crud.parser import parse_sql, ParseError
+from crud.resolver import Resolver
+from crud.analyzer import analyze_statement
+from crud.pipeline import analyze_source
