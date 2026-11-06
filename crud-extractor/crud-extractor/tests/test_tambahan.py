@@ -83,4 +83,13 @@ def test_regresi_lookup_dari_dalam_ke_luar():
     assert inner_cols[0].resolved == "pesanan"
 
 
+def test_regresi_update_subquery_operasi_read():
+    usage = analyze_statement(
+        parse_sql("UPDATE pesanan SET status = 'x' "
+                  "WHERE id IN (SELECT pesanan_id FROM arsip)").statements[0])
+    assert usage["pesanan"] == {"U"}
+    assert usage["arsip"] == {"R"}
+
+
+
 
