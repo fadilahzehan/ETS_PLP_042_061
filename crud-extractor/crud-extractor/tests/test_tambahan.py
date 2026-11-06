@@ -22,4 +22,14 @@ def test_regresi_presedensi_and_or():
     assert isinstance(stmt.where, ast.BinaryOp)
     assert stmt.where.op == "OR"
     assert stmt.where.right.op == "AND"
-    
+
+
+def test_regresi_keyword_case_insensitive():
+    toks = tokenize("select FROM Update delete")
+    keywords = [(t.type, t.value) for t in toks if t.type == T.KEYWORD]
+    assert keywords == [
+        (T.KEYWORD, "SELECT"),
+        (T.KEYWORD, "FROM"),
+        (T.KEYWORD, "UPDATE"),
+        (T.KEYWORD, "DELETE"),
+    ]
