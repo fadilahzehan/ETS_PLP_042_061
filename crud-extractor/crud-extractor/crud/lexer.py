@@ -108,6 +108,16 @@ class Lexer:
             return
         if ch == "/" and self._peek() == "*":
             # TODO(T3): dukung komentar blok /* ... */ (SPESIFIKASI.md bagian 2.3).
+            self._advance()
+            while True:
+                if self._at_end():
+                    raise LexError("komentar blok tidak ditutup", line, col)
+                if self._peek() == "*" and self._peek(1) == "/":
+                    self._advance()
+                    self._advance()
+                    break
+                self._advance()
+            return  
             raise LexError("komentar blok belum didukung", line, col)
         if ch in _SINGLE:
             self._add(_SINGLE[ch], ch, line, col)
