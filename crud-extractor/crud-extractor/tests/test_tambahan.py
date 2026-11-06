@@ -91,5 +91,53 @@ def test_regresi_update_subquery_operasi_read():
     assert usage["arsip"] == {"R"}
 
 
+# ============================================================
+# Test kasus tepi
+# ============================================================
+
+def test_edge_input_kosong():
+    # Input kosong bisa crash jika scanner/parser tidak menangani EOF di awal.
+    script = parse_sql("")
+    assert script.statements == [] and script.errors == []
+
+
+def test_edge_semicolon_berturutan():
+    # Semicolon berturutan (;;;) harus diabaikan tanpa menghasilkan error,
+    # karena grammar script mengizinkan { ";" | statement }.
+    script = parse_sql(";;; SELECT id FROM t ;;;")
+    assert len(script.statements) == 1 and script.errors == []
+
+
+def test_edge_subquery_tiga_level():
+    # Subquery bersarang tiga level menguji scope chain tidak rusak di kedalaman.
+    sql = ("SELECT id FROM a WHERE id IN "
+           "(SELECT id FROM b WHERE id IN "
+           "(SELECT id FROM c))")
+    res = analyze_source(sql)
+    assert res.matrix() == {"a": "R", "b": "R", "c": "R"}
+
+
+def test_edge_multi_join_dan_group_order():
+    # Query kompleks dengan multiple join, WHERE, GROUP BY, dan ORDER BY.
+    sql = ("SELECT p.id, COUNT(*) FROM pelanggan p "
+           "INNER JOIN pesanan o ON o.pelanggan_id = p.id "
+           "WHERE p.aktif = 1 "
+           "GROUP BY p.id "
+           "ORDER BY p.id DESC")
+    res = analyze_source(sql)
+    assert res.matrix() == {"pelanggan": "R", "pesanan": "R"}
+
+
+def test_edge_semua_crud_satu_file():
+    # Satu file dengan keempat operasi CRUD memastikan matrix gabungan benar.
+    sql = ("SELECT id FROM produk;\n"
+           "INSERT INTO log (pesan) VALUES ('ok');\n"
+           "UPDATE produk SET stok = 0;\n"
+           "DELETE FROM log WHERE id = 1;")
+    res = analyze_source(sql)
+    assert res.matrix() == {"log": "CD", "produk": "RU"}
+
+
+
 
 
