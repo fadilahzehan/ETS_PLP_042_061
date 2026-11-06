@@ -13,3 +13,13 @@ from crud.parser import parse_sql, ParseError
 from crud.resolver import Resolver
 from crud.analyzer import analyze_statement
 from crud.pipeline import analyze_source
+
+def test_regresi_presedensi_and_or():
+    """AND mengikat lebih kuat dari OR: a OR b AND c = a OR (b AND c) (§3.1)."""
+    s = parse_sql("SELECT id FROM t WHERE a = 1 OR b = 2 AND c = 3")
+    stmt = s.statements[0]
+    # Root WHERE harus OR, dengan sisi kanan berupa AND
+    assert isinstance(stmt.where, ast.BinaryOp)
+    assert stmt.where.op == "OR"
+    assert stmt.where.right.op == "AND"
+    
