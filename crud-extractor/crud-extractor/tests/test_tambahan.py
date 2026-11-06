@@ -46,3 +46,18 @@ def test_regresi_operator_diamond():
     ops = [t for t in toks if t.type == T.OP]
     assert len(ops) == 1 and ops[0].value == "<>"
 
+
+def test_regresi_synchronize_lanjut_setelah_error():
+    script = parse_sql("SELECT FROM;\nSELECT id FROM t;")
+    assert len(script.errors) == 1
+    assert len(script.statements) == 1
+    assert isinstance(script.statements[0], ast.Select)
+
+
+def test_regresi_left_outer_join():
+    s = parse_sql("SELECT a.id FROM a LEFT OUTER JOIN b ON b.a_id = a.id").statements[0]
+    assert len(s.joins) == 1
+    assert s.joins[0].kind == "LEFT"
+    assert s.joins[0].source.name == "b"
+
+

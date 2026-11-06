@@ -88,9 +88,12 @@ class Parser:
         return ast.Script(statements, errors)
 
     def _synchronize(self) -> None:
-        # Panic mode (Crafting Interpreters bab 6): buang token sampai
-        # titik aman, lalu lanjutkan parsing.
+        # Panic mode (CI Bab 6): buang token sampai semicolon sebagai
+        # titik sinkronisasi, lalu lanjutkan parsing statement berikutnya.
         while not self._at_end():
+            if self._peek().type == T.SEMICOLON:
+                self._advance()
+                return
             self._advance()
 
     def _statement(self):
@@ -176,6 +179,7 @@ class Parser:
             kind = "INNER"
         elif self._match_kw("LEFT"):
             kind = "LEFT"
+            self._match_kw("OUTER")
         self._expect_kw("JOIN")
         source = self._table_ref()
         self._expect_kw("ON")
