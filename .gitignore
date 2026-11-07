@@ -2,3 +2,7 @@ __pycache__/
 .pytest_cache/
 *.csv
 !data/*.csv
+.DS_Store
+__MACOSX/
+*.pyc
+

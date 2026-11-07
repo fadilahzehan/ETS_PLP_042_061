@@ -178,11 +178,7 @@ class Resolver:
             else:
                 col.resolved = _target_of(entry)
             return
-        # TODO(T2): kolom tanpa qualifier (SPESIFIKASI.md bagian 4.3).
-        #   - tepat satu tabel di scope terdalam -> isi col.resolved
-        #   - lebih dari satu tabel              -> warning "ambigu tanpa skema"
-        #   - tidak ada tabel                    -> warning
-        
+        # Kolom tanpa qualifier: hanya lihat scope terdalam (SPESIFIKASI.md bagian 4.3).
         scope = self.scope
         entries = list(scope.entries.values())
         if len(entries) == 0:
