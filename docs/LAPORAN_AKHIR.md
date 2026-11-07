@@ -47,11 +47,13 @@ Statement seperti `CREATE TABLE log (id INT)` tidak dikenali karena CREATE bukan
 
 Anggota 1: Elang Permadi Lau
 NIM: 251524042
-Fokus: Pengerjaan dan analisis pada komponen lexer dan parser (implementasi T1 INSERT...SELECT, perbaikan bug B1, B3, B5, B7, B9), pembuatan kerangka pengujian test regresi dan test kasus tepi.
+Peran utama (Driver): Pengerjaan dan commit rangkaian perbaikan bug regresi (B1, B2, B3, B5, B6, B7, B8, B9) lintas seluruh pipeline (lexer, parser, resolver, analyzer), penambahan 5 test kasus tepi di test_tambahan.py, restrukturisasi repositori ke root, serta penyusunan berkas LOG_AI.md.
+Peran Navigator: Meninjau dan memvalidasi implementasi fitur TODO (T1, T2, T3) serta dokumen desain bersama rekan kelompok.
 
 Anggota 2: Raden Muhammad Zehan Fadillah
 NIM: 251524061
-Fokus: Pengerjaan dan analisis pada komponen resolver dan analyzer (implementasi T2 kolom tanpa qualifier, implementasi T3 komentar blok, perbaikan bug B2, B4, B6, B8), pelabelan data ground truth secara manual untuk evaluasi.
+Peran utama (Driver): Inisialisasi basis kode repositori, implementasi fitur inti TODO (T1 INSERT...SELECT, T2 kolom tanpa qualifier, T3 komentar blok), perbaikan presedensi AND/OR (B4), pelabelan data ground_truth.csv secara manual dari spesifikasi, serta penyusunan draf awal KARTU_DESAIN, LAPORAN_BUG, dan LAPORAN_AKHIR.
+Peran Navigator: Melakukan code review dan pengujian verifikasi pada perbaikan bug regresi dan analisis batas pendekatan.
 
 Kolaborasi:
-Keduanya menerapkan metode pair programming secara bergantian (driver dan navigator tiap 30 menit). Setiap perbaikan kode ditinjau bersama melalui code review sebelum diintegrasikan. Keduanya saling menguji pemahaman konsep dan akar masalah setiap bug berdasarkan bab-bab acuan di Crafting Interpreters untuk persiapan sesi demo individu.
+Keduanya menerapkan metode pair programming secara bergantian (driver dan navigator bergantian peran tiap sesi) dan tidak membagi pekerjaan secara terisolasi per modul. Setiap commit ditinjau bersama untuk memastikan kepatuhan terhadap SPESIFIKASI.md dan konsep Crafting Interpreters.
